@@ -1,0 +1,48 @@
+#geo_form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 300px;
+}
+
+.geo_form_btn {
+  padding: 5px 0;
+  font-size: 1.2rem;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#cinema_list {
+  width: 600px;
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#cinema_list th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #aa0499;
+  color: white;
+}
+
+#cinema_list td,
+#cinema_list th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#cinema_list tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#cinema_list tbody tr:hover {
+  background-color: #ddd;
+}

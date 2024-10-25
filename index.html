@@ -10,19 +10,37 @@
 </head>
 
 <body>
-  <form>
-    <button id="user_geolocation" type="button">Me géolocaliser</button>
+  <form id="geo_form">
 
-    <label>Chercher des cinémas proches d'une adresse</label>
-    <input id="target_adress" type="search" placeholder="L'adresse recherché">
-    <label>Distance en km : <span class="range_nbr">10</span></label>
-    <input id="range" type="range" value="10" max="20" min="1">
-    <button id="search">Rechercher</button>
+    <button id="user_geolocation" class="geo_form_btn" type="button">Me géolocaliser</button>
+
+    <fieldset class="fieldset">
+      <legend>Code Postal</legend>
+      <label>Chercher des cinémas proches d'une adresse postal</label>
+      <input id="target_adress" type="search" placeholder="L'adresse recherché">
+    </fieldset>
+
+    <fieldset class="fieldset">
+      <legend>Distance</legend>
+      <label>Distance en km : <span class="range_nbr">10</span></label>
+      <input id="range" type="range" value="10" max="20" min="1">
+    </fieldset>
+
+    <button id="search" class="geo_form_btn">Rechercher</button>
+
   </form>
 
-  <ul id="cinema_list">
+  <table id="cinema_list">
+    <thead>
+      <tr>
+        <th>Nom du cinéma</th>
+        <th>Adresse</th>
+      </tr>
+    </thead>
+    <tbody>
 
-  </ul>
+    </tbody>
+  </table>
 
 </body>
 

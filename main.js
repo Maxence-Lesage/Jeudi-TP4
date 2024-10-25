@@ -6,7 +6,7 @@ const target_adress = document.querySelector("#target_adress");
 const search = document.querySelector("#search");
 const range = document.querySelector("#range");
 const range_nbr = document.querySelector(".range_nbr");
-const cinema_list = document.querySelector("#cinema_list");
+const cinema_list = document.querySelector("#cinema_list tbody");
 
 /*RÉCUPERER LE CODE POSTAL AVEC LA GEOLOCALISATION*/
 user_geolocation.addEventListener('click', () => {
@@ -22,12 +22,18 @@ user_geolocation.addEventListener('click', () => {
 search.addEventListener('click', (e) => {
   e.preventDefault();
   const range_value = range.value;
-  getCoordinatesFromPostalCode(62500).then(coords => {
+  const postalCode = target_adress.value;
+  getCoordinatesFromPostalCode(postalCode).then(coords => {
     fetch(`https://data.culture.gouv.fr/api/explore/v2.1/catalog/datasets/etablissements-cinematographiques/records?where=within_distance(geolocalisation, geom'POINT(${coords.longitude} ${coords.latitude})', ${range_value}km)&limit=5`)
       .then(response => response.json()).then(data => {
-        cinema_list.innerHTML = data.results.map(cinema => {
-          return `<li>nom: ${cinema.nom} | adresse: ${cinema.adresse}</li>`
-        }).join('');
+        if (data.results) {
+          cinema_list.innerHTML = data.results.map(cinema => {
+            return `<tr>
+          <td>${cinema.nom}</td>
+          <td>${cinema.adresse}</td>
+          </tr>`
+          }).join('');
+        }
       });
   });
 })
