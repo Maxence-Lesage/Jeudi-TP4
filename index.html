@@ -18,12 +18,14 @@
       <legend>Code Postal</legend>
       <label>Chercher des cinémas proches d'une adresse postal</label>
       <input id="target_adress" type="search" placeholder="L'adresse recherché">
+      <p class="geolocalisation_error" hidden></p>
     </fieldset>
 
     <fieldset class="fieldset">
       <legend>Distance</legend>
       <label>Distance en km : <span class="range_nbr">10</span></label>
       <input id="range" type="range" value="10" max="20" min="1">
+      <p class="scan_error" hidden></p>
     </fieldset>
 
     <button id="search" class="geo_form_btn">Rechercher</button>

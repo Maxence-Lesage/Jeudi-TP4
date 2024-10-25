@@ -46,3 +46,8 @@
 #cinema_list tbody tr:hover {
   background-color: #ddd;
 }
+
+.scan_error,
+.geolocalisation_error {
+  color: red;
+}

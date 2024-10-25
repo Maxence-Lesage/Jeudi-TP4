@@ -1,45 +1,64 @@
 import { getAddressFromCoords, getCoordinatesFromPostalCode } from "./javascript/addressApi.js";
 import { getUserCoordinates } from "./javascript/geolocation.js";
+import { tableMapping } from "./javascript/tableMapping.js";
+import { waitFor } from "./javascript/utils.js";
 
-const user_geolocation = document.querySelector("#user_geolocation");
-const target_adress = document.querySelector("#target_adress");
-const search = document.querySelector("#search");
-const range = document.querySelector("#range");
-const range_nbr = document.querySelector(".range_nbr");
-const cinema_list = document.querySelector("#cinema_list tbody");
+const elements = {
+  user_geolocation: document.querySelector("#user_geolocation"),
+  target_adress: document.querySelector("#target_adress"),
+  search: document.querySelector("#search"),
+  range: document.querySelector("#range"),
+  range_nbr: document.querySelector(".range_nbr"),
+  scan_error_message: document.querySelector(".scan_error"),
+  geolocalisation_error: document.querySelector(".geolocalisation_error")
+}
 
 /*RÉCUPERER LE CODE POSTAL AVEC LA GEOLOCALISATION*/
-user_geolocation.addEventListener('click', () => {
+elements.user_geolocation.addEventListener('click', () => {
   getUserCoordinates()
     .then(data => getAddressFromCoords(data))
     .then(properties => {
-      target_adress.value = properties.postcode;
+      elements.target_adress.value = properties.postcode;
     })
-    .catch(error => console.log("Erreur : " + error));
+    .catch(error => {
+      elements.geolocalisation_error.removeAttribute('hidden');
+      elements.geolocalisation_error.textContent = error.message;
+      waitFor(5).then(() => {
+        elements.geolocalisation_error.setAttribute('hidden', true);
+      });
+    });
 });
 
 /*RECHERCHE DES CINEMAS PROCHES*/
-search.addEventListener('click', (e) => {
+elements.search.addEventListener('click', (e) => {
   e.preventDefault();
-  const range_value = range.value;
-  const postalCode = target_adress.value;
-  getCoordinatesFromPostalCode(postalCode).then(coords => {
-    fetch(`https://data.culture.gouv.fr/api/explore/v2.1/catalog/datasets/etablissements-cinematographiques/records?where=within_distance(geolocalisation, geom'POINT(${coords.longitude} ${coords.latitude})', ${range_value}km)&limit=5`)
-      .then(response => response.json()).then(data => {
-        if (data.results) {
-          cinema_list.innerHTML = data.results.map(cinema => {
-            return `<tr>
-          <td>${cinema.nom}</td>
-          <td>${cinema.adresse}</td>
-          </tr>`
-          }).join('');
-        }
+  const range_value = elements.range.value;
+  const postalCode = elements.target_adress.value;
+
+  if (postalCode) {
+    getCoordinatesFromPostalCode(postalCode)
+      .then(coords => {
+        return tableMapping(coords, range_value);
+      })
+      .catch(error => {
+        elements.scan_error_message.removeAttribute('hidden');
+        elements.scan_error_message.textContent = error;
+        waitFor(5).then(() => {
+          elements.scan_error_message.setAttribute('hidden', true);
+        });
       });
-  });
-})
+  } else {
+    elements.scan_error_message.removeAttribute('hidden');
+    elements.scan_error_message.textContent = "Veuillez renseigner un code postal";
+    waitFor(5).then(() => {
+      elements.scan_error_message.setAttribute('hidden', true);
+    });
+  }
+});
+
 
 /*UPDATE DE LA RANGE DE KILOMETRES*/
-range.addEventListener('input', () => {
-  const range_value = range.value;
-  range_nbr.textContent = range_value;
+elements.range.addEventListener('input', () => {
+  const range_value = elements.range.value;
+  elements.range_nbr.textContent = range_value;
 });
